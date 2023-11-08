@@ -32,14 +32,14 @@ fun TaskTheme(
     content: @Composable () -> Unit
 ) {
     val colorScheme = LightColorScheme
-    val view = LocalView.current
-    if (!view.isInEditMode) {
-        SideEffect {
-            val window = (view.context as Activity).window
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
-            WindowCompat.getInsetsController(window, view).systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-        }
-    }
+//    val view = LocalView.current
+//    if (!view.isInEditMode) {
+//        SideEffect {
+//            val window = (view.context as Activity).window
+//            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
+//            WindowCompat.getInsetsController(window, view).systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_BARS_BY_TOUCH
+//        }
+//    }
 
     MaterialTheme(
         colorScheme = colorScheme,
