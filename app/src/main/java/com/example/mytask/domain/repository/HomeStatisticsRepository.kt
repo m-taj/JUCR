@@ -1,6 +1,6 @@
 package com.example.mytask.domain.repository
 
-import com.example.mytask.domain.models.BatteryStats
+import com.example.mytask.domain.models.ChargingData
 import com.example.mytask.domain.models.NearestChargingStation
 
 /**
@@ -9,7 +9,7 @@ import com.example.mytask.domain.models.NearestChargingStation
 interface HomeStatisticsRepository {
     suspend fun getChargingStats(): String
 
-    suspend fun getBatterStats(): BatteryStats
+    suspend fun getBatterStats():  List<ChargingData>
 
     suspend fun getNearStationsList(): List<NearestChargingStation>
 }
