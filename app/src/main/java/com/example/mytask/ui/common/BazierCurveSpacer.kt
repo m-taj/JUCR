@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -23,17 +24,16 @@ import com.example.mytask.ui.theme.Pink
 
 
 @Composable
-fun BezierCurveSpacer(height: Int, curveFillingColor: Color) {
+fun BezierCurveSpacer(modifier: Modifier,height: Int, curveFillingColor: Color) {
 
-    val configuration = LocalConfiguration.current
     val densityPx = Density(LocalContext.current).density
 
     val curveWidth = 150.dp
     val curveDepth = 45.dp
 
+    val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp * densityPx
-
-    val cR = 12 * 0
+    val screenHeight = configuration.screenHeightDp * densityPx
 
     val curveDepthPx: Float = curveDepth.value * densityPx
     val curveWidthPx: Float = curveWidth.value * densityPx
@@ -43,11 +43,9 @@ fun BezierCurveSpacer(height: Int, curveFillingColor: Color) {
 
     val curveSmoothnessOffsetPoint = 35 * densityPx
     val curveLowestPoint = curveStartPoint + curveWidthPx / 2
-    Spacer(modifier = Modifier
-        .clickable(enabled = true, onClick = {})
+    Spacer(modifier = modifier
         .height(height.dp)
         .fillMaxWidth()
-        .background(Color.White)
         .drawWithCache {
             onDrawBehind {
                 /**
@@ -61,7 +59,8 @@ fun BezierCurveSpacer(height: Int, curveFillingColor: Color) {
                         curveLowestPoint = curveLowestPoint,
                         curveDepthPx = curveDepthPx,
                         curveEndPoint = curveEndPoint,
-                        screenWidth = screenWidth
+                        screenWidth = screenWidth,
+                        screenHighet = screenHeight
                     ), color = curveFillingColor, style = Fill
                 )
             }
@@ -71,5 +70,5 @@ fun BezierCurveSpacer(height: Int, curveFillingColor: Color) {
 @Preview
 @Composable
 fun BezierCurveSpacerPreview() {
-    BezierCurveSpacer(height = 50, curveFillingColor = Pink)
+    BezierCurveSpacer(modifier = Modifier,height = 50, curveFillingColor = Pink)
 }
