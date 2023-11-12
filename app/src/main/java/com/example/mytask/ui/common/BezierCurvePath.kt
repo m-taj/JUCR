@@ -12,10 +12,21 @@ fun getBezierCurvePath(
     curveDepthPx: Float,
     curveEndPoint: Float,
     screenWidth: Float,
-    screenHighet:Float
+    screenHighet: Float,
 ): Path {
     return Path().apply {
+        reset()
+        moveTo(screenWidth, 0f)
+        lineTo(screenWidth, screenHighet)
+        lineTo(0f, screenHighet)
+        lineTo(0f, 0f)
 
+//
+//        lineTo(screenWidth, 0f)
+//
+//        this.reset()
+
+        moveTo(0f, 0f)
         /**
          * drawing first horizontal line from screen start to curve start
          * at a zero value on Y axis
@@ -52,5 +63,7 @@ fun getBezierCurvePath(
          * at a zero value on Y axis
          * */
         lineTo(screenWidth, 0f)
+
+        this.close()
     }
 }
