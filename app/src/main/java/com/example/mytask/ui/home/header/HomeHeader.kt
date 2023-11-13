@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.mytask.R
 import com.example.mytask.ui.theme.Pink
@@ -27,36 +28,39 @@ import com.example.mytask.ui.theme.Pink
  */
 
 @Composable
-fun ExpandedHomeHeader(modifier: Modifier) {
+fun ExpandedHomeHeader(modifier: Modifier, imageResizeRange: () -> Dp) {
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 32.dp), verticalArrangement = Arrangement.SpaceBetween
+        modifier = modifier
+            .fillMaxWidth(), verticalArrangement = Arrangement.SpaceBetween
     ) {
 
         Text(
             text = "Good Morning, Billy",
-            modifier = Modifier.align(Alignment.CenterHorizontally),
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(bottom = 8.dp),
             style = MaterialTheme.typography.bodySmall,
             color = Color.White
         )
         Text(
             text = "Charging your car ..",
             style = MaterialTheme.typography.titleLarge,
-            modifier = Modifier.align(Alignment.CenterHorizontally),
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(bottom = 32.dp),
             color = Color.White
         )
         Image(
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .padding(horizontal = 32.dp)
-                .width(390.dp),
+                .width(imageResizeRange()),
             contentScale = ContentScale.FillWidth,
             painter = painterResource(id = R.drawable.tesla_art),
             contentDescription = null
         )
         Text(
-            text = "time To eng Charge : 49 MIN",
+            text = "Time to end of charge : 49 MIN",
             style = MaterialTheme.typography.bodySmall,
             modifier = Modifier.align(Alignment.CenterHorizontally),
             color = Color.White
@@ -67,7 +71,7 @@ fun ExpandedHomeHeader(modifier: Modifier) {
 @Composable
 fun CollapsedHomeHeader(modifier: Modifier) {
     Row(
-        modifier = Modifier.padding(horizontal = 16.dp),
+        modifier = modifier.padding(horizontal = 16.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Column(
@@ -89,7 +93,8 @@ fun CollapsedHomeHeader(modifier: Modifier) {
         Spacer(modifier = Modifier.weight(1f))
         Image(
             modifier = Modifier
-                .width(290.dp).padding(start = 40.dp),
+                .width(290.dp)
+                .padding(start = 40.dp),
             contentScale = ContentScale.FillWidth,
             painter = painterResource(id = R.drawable.tesla_art),
             contentDescription = null
@@ -102,7 +107,7 @@ fun CollapsedHomeHeader(modifier: Modifier) {
 @Composable
 fun HomeHeadersPreview() {
     Column(modifier = Modifier.background(Pink)) {
-        ExpandedHomeHeader(modifier = Modifier)
+        ExpandedHomeHeader(modifier = Modifier) { 320.dp }
         Spacer(modifier = Modifier.weight(1f))
         CollapsedHomeHeader(modifier = Modifier)
     }

@@ -9,6 +9,11 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideIn
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -44,7 +49,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Fill
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -60,12 +64,12 @@ import com.example.mytask.domain.models.ChargingData
 import com.example.mytask.domain.models.NearestChargingStation
 import com.example.mytask.presentation.home.events.HomeEvents
 import com.example.mytask.presentation.home.viewmodel.HomeViewModel
-import com.example.mytask.ui.common.BezierCurveSpacer
 import com.example.mytask.ui.common.BottomNavigationBar
 import com.example.mytask.ui.common.HeaderTextView
 import com.example.mytask.ui.common.LoadingView
 import com.example.mytask.ui.common.NormalTextView
 import com.example.mytask.ui.common.TitleTextView
+import com.example.mytask.ui.common.bezierCurveCardProvider
 import com.example.mytask.ui.home.header.CollapsedHomeHeader
 import com.example.mytask.ui.home.header.ExpandedHomeHeader
 import com.example.mytask.ui.theme.Pink
@@ -247,16 +251,15 @@ fun stationsList(list: List<NearestChargingStation>, scrollState: LazyListState)
 }
 
 @Composable
-fun HeaderView(scrollOffset: () -> Float, screenHeight: Dp) {
+fun HeaderView(scrollOffset: () -> Float, screenHeight: Dp, screenWidth: Dp) {
     val imageSize by animateDpAsState(
-        targetValue = maxOf(390.dp, 70.dp * scrollOffset()), label = ""
+        targetValue = maxOf(290.dp, 70.dp * scrollOffset()), label = ""
     )
     val headerSize by animateDpAsState(
-        targetValue = maxOf((screenHeight / 3) * scrollOffset(), 100.dp),
-        label = ""
+        targetValue = maxOf((screenHeight / 3) * scrollOffset(), 100.dp), label = ""
     )
 
-    val isExpanded = scrollOffset() > 0.7
+    val isExpanded = scrollOffset() > 0.9
 
     Box(
         modifier = Modifier
@@ -266,22 +269,26 @@ fun HeaderView(scrollOffset: () -> Float, screenHeight: Dp) {
     ) {
         AnimatedVisibility(
             visible = isExpanded,
-            enter = fadeIn(),
-            exit = fadeOut(animationSpec = tween(20, easing = FastOutLinearInEasing))
+            enter = fadeIn() + slideInHorizontally(animationSpec = tween(1000),
+                initialOffsetX = { screenWidth.value.toInt() }),
+            exit = fadeOut(
+                animationSpec = tween(
+                    200, easing = FastOutLinearInEasing
+                )
+            ) + slideOutHorizontally(animationSpec = tween(1000),
+                targetOffsetX = { screenWidth.value.toInt() })
         ) {
-            ExpandedHomeHeader(modifier = Modifier
-                .size(scrollOffset().toInt().dp)
-                .graphicsLayer {
-                    alpha = scrollOffset() * 100f
-                })
+            ExpandedHomeHeader(modifier = Modifier.fillMaxWidth(), { imageSize })
         }
-        AnimatedVisibility(visible = isExpanded.not(), enter = fadeIn(), exit = fadeOut()) {
+        AnimatedVisibility(
+            visible = isExpanded.not(),
+            enter = fadeIn() + slideInVertically(animationSpec = tween(1000),
+                initialOffsetY = { screenHeight.value.toInt() / 2 }),
+            exit = fadeOut() + slideOutVertically(animationSpec = tween(1000),
+                targetOffsetY = { screenHeight.value.toInt() })
+        ) {
             CollapsedHomeHeader(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .graphicsLayer {
-                        alpha = scrollOffset() * -1.5f
-                    }
+                modifier = Modifier.fillMaxWidth()
             )
         }
     }
@@ -314,20 +321,20 @@ fun SuccessView(
             .background(Pink)
             .padding(innerPadding)
     ) {
-        HeaderView(scrollOffset = { scrollOffset }, screenHeight = config.screenHeightDp.dp)
+        HeaderView(
+            scrollOffset = { scrollOffset },
+            screenHeight = config.screenHeightDp.dp,
+            screenWidth = config.screenWidthDp.dp
+        )
         Column(modifier = Modifier
             .fillMaxWidth()
             .drawWithCache {
                 onDrawBehind {
                     /**
-                     * drawing the returned Path above , filling the space left by the curve and
-                     * setting color for the  it
+                     * drawing the acquired Path and filling it with the white color
                      * */
-                    drawPath(
-                        path = BezierCurveSpacer(
-                            context = { context },
-                            localConfiguration = { config }
-                        ), color = Color.White, style = Fill
+                    drawPath(path = bezierCurveCardProvider(context = { context },
+                        localConfiguration = { config }), color = Color.White, style = Fill
                     )
                 }
             }) {

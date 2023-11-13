@@ -2,7 +2,6 @@ package com.example.mytask.ui.common
 
 import android.content.Context
 import android.content.res.Configuration
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
@@ -13,7 +12,7 @@ import androidx.compose.ui.unit.dp
 
 
 
-fun ColumnScope.BezierCurveSpacer(/*curveFillingColor: Color*/context:()-> Context,localConfiguration:()-> Configuration):Path {
+fun bezierCurveCardProvider(context:()-> Context, localConfiguration:()-> Configuration):Path {
 
     val densityPx = Density(context()).density
 
