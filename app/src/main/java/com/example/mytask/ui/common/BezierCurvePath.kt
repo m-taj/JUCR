@@ -4,6 +4,14 @@ import androidx.compose.ui.graphics.Path
 
 /**
  * Created by Mohammed Taguldeen on 08/11/2023.
+ *
+ * function provides a path of a rectangle with a Curve at the middle of its top side
+ * @param[curveStartPoint] represents curve start point on screen
+ * @param[curveEndPoint] represents curve end point on screen
+ * @param[curveSmoothnessOffsetPoint] represents curve smoothness point
+ * @param[curveLowestPoint] represents lowest point on screen
+ * @param[screenWidth] represents width of screen
+ * @param[screenHeight] represents height of screen
  */
 fun getBezierCurvePath(
     curveStartPoint: Float,
@@ -12,19 +20,13 @@ fun getBezierCurvePath(
     curveDepthPx: Float,
     curveEndPoint: Float,
     screenWidth: Float,
-    screenHighet: Float,
+    screenHeight: Float,
 ): Path {
     return Path().apply {
-        reset()
         moveTo(screenWidth, 0f)
-        lineTo(screenWidth, screenHighet)
-        lineTo(0f, screenHighet)
+        lineTo(screenWidth, screenHeight)
+        lineTo(0f, screenHeight)
         lineTo(0f, 0f)
-
-//
-//        lineTo(screenWidth, 0f)
-//
-//        this.reset()
 
         moveTo(0f, 0f)
         /**

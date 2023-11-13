@@ -12,6 +12,13 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+
+/**
+ * Home Screen View Model has repository injected in its constructor ,
+ * if UseCase was Implemented then the repo would have been injected in the use case and the use-case
+ * would be injected into the view-model instead
+ **/
+
 @HiltViewModel
 class HomeViewModel @Inject constructor(val repository: HomeStatisticsRepository) : ViewModel() {
 
@@ -19,7 +26,7 @@ class HomeViewModel @Inject constructor(val repository: HomeStatisticsRepository
         get() = _homeEvents
     private val _homeEvents =
         MutableStateFlow<HomeEvents>(
-           HomeEvents.loading()
+            HomeEvents.loading()
         )
 
 
@@ -33,11 +40,16 @@ class HomeViewModel @Inject constructor(val repository: HomeStatisticsRepository
 
         viewModelScope.launch {
 
-            val nearestStation = async {repository.getNearStationsList()}
-            val batteryStats=    async { repository.getBatterStats() }
+            val nearestStation = async { repository.getNearStationsList() }
+            val batteryStats = async { repository.getBatterStats() }
 
             try {
-                _homeEvents.update { HomeEvents.nearStationsListReceivedSuccessFully(nearestStation.await(),batteryStats.await()) }
+                _homeEvents.update {
+                    HomeEvents.nearStationsListReceivedSuccessFully(
+                        nearestStation.await(),
+                        batteryStats.await()
+                    )
+                }
             } catch (throwable: Throwable) {
                 _homeEvents.update { HomeEvents.error(throwable) }
             }

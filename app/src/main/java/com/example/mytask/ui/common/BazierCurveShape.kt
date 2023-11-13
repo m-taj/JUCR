@@ -39,7 +39,7 @@ fun bezierCurveCardProvider(context:()-> Context, localConfiguration:()-> Config
         curveDepthPx = curveDepthPx,
         curveEndPoint = curveEndPoint,
         screenWidth = screenWidth,
-        screenHighet = screenHeight
+        screenHeight = screenHeight
     )
 }
 
