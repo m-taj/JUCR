@@ -64,6 +64,10 @@ import java.lang.StrictMath.min
 
 /**
  * Created by Mohammed Taguldeen on 03/11/2023.
+ *
+ *
+ * This File represents the home screen , assumptions made for the header animations And scroll
+ * point of the list
  */
 
 @Composable
@@ -79,7 +83,6 @@ fun HomeScreen(
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreenContent(state: HomeEvents) {
     Scaffold(bottomBar = { BottomNavigationBar() }, content = { innerPadding ->
@@ -311,7 +314,8 @@ fun batteryDataView(batteryData: List<ChargingData>) {
             modifier = Modifier
                 .align(Alignment.CenterVertically)
                 .padding(start = 16.dp),
-            text = "Statistics"
+            text = "Statistics",
+            color = Color.DarkGray
         )
         ChargingLoader(
             modifier = Modifier
@@ -351,15 +355,6 @@ fun batteryDataView(batteryData: List<ChargingData>) {
 fun SuccessViewPreview() {
     val stats = listOf(
         ChargingData("240 volt", "Voltage"),
-        ChargingData("540 km", "Remaining Charge"),
-        ChargingData("540 km", "Remaining Charge"),
-        ChargingData("540 km", "Remaining Charge"),
-        ChargingData("540 km", "Remaining Charge"),
-        ChargingData("540 km", "Remaining Charge"),
-        ChargingData("540 km", "Remaining Charge"),
-        ChargingData("540 km", "Remaining Charge"),
-        ChargingData("540 km", "Remaining Charge"),
-        ChargingData("540 km", "Remaining Charge"),
         ChargingData("540 km", "Remaining Charge"),
         /**
          * assumed this value based on design
