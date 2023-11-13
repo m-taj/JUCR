@@ -44,7 +44,7 @@ fun StatisticsCard(
             defaultElevation = 5.dp
         ),
         modifier = modifier
-            .requiredSize(160.dp)
+            .requiredSize(145.dp)
             .padding(8.dp)
             .background(
                 color = Color.White, shape = RoundedCornerShape(8.dp)
@@ -78,13 +78,13 @@ fun StatisticsCard(
                 text = valueAndUnit,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 4.dp, horizontal = 8.dp)
+                    .padding(vertical = 4.dp, horizontal = 8.dp), color = Color.DarkGray
             )
             NormalTextView(
                 text = description,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 4.dp, horizontal = 8.dp)
+                    .padding( horizontal = 8.dp), color = Color.Gray
             )
         }
     }
