@@ -12,9 +12,6 @@ import kotlinx.coroutines.delay
  */
 class HomeStatisticsDataSource : HomeStatisticsRepository {
 
-    override suspend fun getChargingStats(): String {
-        TODO("Not yet implemented")
-    }
 
     override suspend fun getBatterStats(): List<ChargingData> {
         delay(3000L)
@@ -23,13 +20,6 @@ class HomeStatisticsDataSource : HomeStatisticsRepository {
 
     private fun dummyBatterStats() = listOf(
         ChargingData("240 volt", "Voltage"),
-        ChargingData("540 km", "Remaining Charge"),
-        ChargingData("540 km", "Remaining Charge"),
-        ChargingData("540 km", "Remaining Charge"),
-        ChargingData("540 km", "Remaining Charge"),
-        ChargingData("540 km", "Remaining Charge"),
-        ChargingData("540 km", "Remaining Charge"),
-        ChargingData("540 km", "Remaining Charge"),
         ChargingData("540 km", "Remaining Charge"),
         /**
          * assumed this value based on design

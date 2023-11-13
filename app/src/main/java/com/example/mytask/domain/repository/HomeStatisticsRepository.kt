@@ -7,7 +7,6 @@ import com.example.mytask.domain.models.NearestChargingStation
  * Created by Mohammed Taguldeen on 05/11/2023.
  */
 interface HomeStatisticsRepository {
-    suspend fun getChargingStats(): String
 
     suspend fun getBatterStats():  List<ChargingData>
 
