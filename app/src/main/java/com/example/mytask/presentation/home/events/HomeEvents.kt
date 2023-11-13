@@ -15,7 +15,7 @@ sealed class HomeEvents {
     companion object {
         fun loading() = Loading
         fun error(throwable: Throwable) = Error(throwable)
-        fun nearStationsListReceivedSuccessFully(stationsList: List<NearestChargingStation>,batteryStats:  List<ChargingData>) =
-            NearStationsListReceivedSuccessFully(stationsList,batteryStats)
+        fun nearStationsListReceivedSuccessFully(stations: List<NearestChargingStation>, batteryStats:  List<ChargingData>) =
+            NearStationsListReceivedSuccessFully(stations,batteryStats)
     }
 }
