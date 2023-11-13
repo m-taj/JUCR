@@ -33,32 +33,32 @@ fun TextViewsPreview() {
 }
 
 @Composable
-fun HeaderTextView(modifier: Modifier, text: String) {
-    Text(
-        text = text,
-        modifier = modifier,
-        style = MaterialTheme.typography.labelLarge,
-        color = MaterialTheme.colorScheme.onBackground
-    )
-}
-
-@Composable
-fun TitleTextView(modifier: Modifier, text: String) {
+fun HeaderTextView(text: String, modifier: Modifier, color: Color = Color.Black) {
     Text(
         text = text,
         modifier = modifier,
         style = MaterialTheme.typography.titleMedium,
-        color = MaterialTheme.colorScheme.onBackground
+        color = color
+    )
+}
+
+@Composable
+fun TitleTextView(text: String, modifier: Modifier, color: Color= Color.Black) {
+    Text(
+        text = text,
+        modifier = modifier,
+        style = MaterialTheme.typography.titleSmall,
+        color = color
     )
 }
 
 
 @Composable
-fun NormalTextView(modifier: Modifier, text: String) {
+fun NormalTextView(text: String, modifier: Modifier, color: Color= Color.Black) {
     Text(
         text = text,
         modifier = modifier,
         style = MaterialTheme.typography.labelSmall,
-        color = MaterialTheme.colorScheme.onBackground
+        color = color
     )
 }

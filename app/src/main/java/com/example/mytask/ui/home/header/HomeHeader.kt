@@ -28,10 +28,9 @@ import com.example.mytask.ui.theme.Pink
  */
 
 @Composable
-fun ExpandedHomeHeader(modifier: Modifier, imageResizeRange: () -> Dp) {
+fun ExpandedHomeHeader(imageResizeRange: () -> Dp, modifier: Modifier) {
     Column(
-        modifier = modifier
-            .fillMaxWidth(), verticalArrangement = Arrangement.SpaceBetween
+        modifier = modifier.fillMaxWidth(), verticalArrangement = Arrangement.SpaceBetween
     ) {
 
         Text(
@@ -107,7 +106,7 @@ fun CollapsedHomeHeader(modifier: Modifier) {
 @Composable
 fun HomeHeadersPreview() {
     Column(modifier = Modifier.background(Pink)) {
-        ExpandedHomeHeader(modifier = Modifier) { 320.dp }
+        ExpandedHomeHeader(imageResizeRange = { 320.dp }, modifier = Modifier)
         Spacer(modifier = Modifier.weight(1f))
         CollapsedHomeHeader(modifier = Modifier)
     }

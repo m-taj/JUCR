@@ -53,7 +53,7 @@ fun TaskTheme(
             windowsInsetsController.isAppearanceLightNavigationBars = true
 
             WindowCompat.getInsetsController(window, view).systemBarsBehavior =
-                WindowInsetsControllerCompat.BEHAVIOR_SHOW_BARS_BY_TOUCH
+                WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         }
 
         MaterialTheme(
