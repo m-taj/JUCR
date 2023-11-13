@@ -8,8 +8,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import com.example.mytask.ui.navigation.TaskApplicationNavHost
-import com.example.mytask.ui.theme.TaskTheme
+import com.example.mytask.navigation.TaskApplicationNavHost
+import com.example.mytask.theme.TaskTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 
