@@ -270,13 +270,13 @@ fun HeaderView(scrollOffset: () -> Float, screenHeight: Dp, screenWidth: Dp) {
         AnimatedVisibility(
             visible = isExpanded,
             enter = fadeIn() + slideInHorizontally(animationSpec = tween(1000),
-                initialOffsetX = { screenWidth.value.toInt() }),
+                initialOffsetX = { screenWidth.value.toInt() + imageSize.value.toInt() }),
             exit = fadeOut(
                 animationSpec = tween(
                     200, easing = FastOutLinearInEasing
                 )
             ) + slideOutHorizontally(animationSpec = tween(1000),
-                targetOffsetX = { screenWidth.value.toInt() })
+                targetOffsetX = { screenWidth.value.toInt() + imageSize.value.toInt() })
         ) {
             ExpandedHomeHeader(modifier = Modifier.fillMaxWidth(), { imageSize })
         }
