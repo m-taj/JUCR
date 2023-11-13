@@ -1,20 +1,16 @@
 package com.example.mytask.ui.home
 
 import android.widget.Toast
-import androidx.annotation.ColorRes
-import androidx.annotation.DrawableRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideIn
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -28,28 +24,21 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Fill
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
@@ -65,8 +54,9 @@ import com.example.mytask.domain.models.NearestChargingStation
 import com.example.mytask.presentation.home.events.HomeEvents
 import com.example.mytask.presentation.home.viewmodel.HomeViewModel
 import com.example.mytask.ui.common.BottomNavigationBar
+import com.example.mytask.ui.common.ChargingView
+import com.example.mytask.ui.common.DataLoadingView
 import com.example.mytask.ui.common.HeaderTextView
-import com.example.mytask.ui.common.LoadingView
 import com.example.mytask.ui.common.NormalTextView
 import com.example.mytask.ui.common.TitleTextView
 import com.example.mytask.ui.common.bezierCurveCardProvider
@@ -109,11 +99,13 @@ fun HomeScreenContent(state: HomeEvents) {
                 }
 
                 is HomeEvents.Loading -> {
-                    LoadingView(modifier = Modifier, innerPadding = innerPadding)
+                    DataLoadingView(innerPadding = innerPadding, modifier = Modifier)
                 }
 
                 is HomeEvents.NearStationsListReceivedSuccessFully -> {
-                    SuccessView(innerPadding, state.chargingData, state.chargingStations)
+                    with(state) {
+                        SuccessView(innerPadding, chargingData, chargingStations)
+                    }
                 }
             }
         }
@@ -124,66 +116,6 @@ fun HomeScreenContent(state: HomeEvents) {
 @Composable
 fun ErrorToast(throwable: Throwable) {
     Toast.makeText(LocalContext.current, throwable.message.toString(), Toast.LENGTH_SHORT).show()
-}
-
-
-@Composable
-fun StatisticsCard(
-    @DrawableRes drawableRes: Int,
-    @ColorRes backgroundColor: Int,
-    valueAndUnit: String,
-    description: String,
-) {
-    Card(
-        border = BorderStroke(1.dp, colorResource(id = R.color.very_light_gray)),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 5.dp
-        ),
-        modifier = Modifier
-            .requiredSize(160.dp)
-            .padding(8.dp)
-            .background(
-                color = Color.White, shape = RoundedCornerShape(8.dp)
-            )
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(color = Color.White)
-                .padding(vertical = 12.dp, horizontal = 12.dp),
-            verticalArrangement = Arrangement.Center
-        ) {
-
-            Image(
-                painter = painterResource(id = drawableRes),
-                contentDescription = "",
-                modifier = Modifier
-                    .width(42.dp)
-                    .height(42.dp)
-                    .background(colorResource(id = backgroundColor), CircleShape)
-                    .clip(CircleShape)
-                    .padding(10.dp),
-                contentScale = ContentScale.Crop,
-            )
-            Spacer(
-                Modifier
-                    .weight(1f)
-                    .fillMaxWidth()
-            )
-            TitleTextView(
-                text = valueAndUnit,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp, horizontal = 8.dp)
-            )
-            NormalTextView(
-                text = description,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp, horizontal = 8.dp)
-            )
-        }
-    }
 }
 
 @Composable
@@ -232,11 +164,11 @@ fun NearbySuperchargesListView(modifier: Modifier, nearestChargingStation: Neare
 }
 
 @Composable
-fun stationsList(list: List<NearestChargingStation>, scrollState: LazyListState) {
+fun stationsList(list: List<NearestChargingStation>, scrollState: () -> LazyListState) {
     LazyColumn(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp), state = scrollState
+            .padding(horizontal = 16.dp), state = scrollState()
     ) {
         items(count = list.size, key = {
             list[it].id
@@ -259,7 +191,11 @@ fun HeaderView(scrollOffset: () -> Float, screenHeight: Dp, screenWidth: Dp) {
         targetValue = maxOf((screenHeight / 3) * scrollOffset(), 100.dp), label = ""
     )
 
-    val isExpanded = scrollOffset() > 0.9
+    val isExpanded by remember {
+        derivedStateOf {
+            scrollOffset() > 0.9
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -278,13 +214,18 @@ fun HeaderView(scrollOffset: () -> Float, screenHeight: Dp, screenWidth: Dp) {
             ) + slideOutHorizontally(animationSpec = tween(1000),
                 targetOffsetX = { screenWidth.value.toInt() + imageSize.value.toInt() })
         ) {
-            ExpandedHomeHeader(modifier = Modifier.fillMaxWidth(), { imageSize })
+            ExpandedHomeHeader(
+                imageResizeRange = { imageSize },
+                modifier = Modifier.fillMaxWidth(),
+            )
         }
         AnimatedVisibility(
             visible = isExpanded.not(),
-            enter = fadeIn() + slideInVertically(animationSpec = tween(1000),
+            enter = fadeIn() + slideInVertically(
+                animationSpec = tween(1000),
                 initialOffsetY = { screenHeight.value.toInt() / 2 }),
-            exit = fadeOut() + slideOutVertically(animationSpec = tween(1000),
+            exit = fadeOut() + slideOutVertically(
+                animationSpec = tween(1000),
                 targetOffsetY = { screenHeight.value.toInt() })
         ) {
             CollapsedHomeHeader(
@@ -306,7 +247,7 @@ fun SuccessView(
     val scrollOffset by remember {
         derivedStateOf {
             /**
-             *create a value starting from one and decreases
+             *create a value starting from one and decreases as scroll through the list
              ***/
             min(
                 1f,
@@ -338,7 +279,8 @@ fun SuccessView(
                     )
                 }
             }) {
-            batteryDataView(stats = stats)
+
+            batteryDataView(batteryData = stats)
 
             Row(
                 modifier = Modifier
@@ -346,33 +288,52 @@ fun SuccessView(
                     .padding(horizontal = 16.dp, vertical = 8.dp)
                     .fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
             ) {
-                HeaderTextView(modifier = Modifier, text = "Nearby Supercharges")
+                HeaderTextView(
+                    modifier = Modifier, text = "Nearby Supercharges", color = Color.DarkGray
+                )
                 Spacer(
                     Modifier
                         .weight(1f)
                         .fillMaxHeight()
                 )
-                NormalTextView(modifier = Modifier.padding(horizontal = 8.dp), text = "View All")
+                NormalTextView(
+                    modifier = Modifier.padding(horizontal = 8.dp),
+                    text = "View All",
+                    color = Color.Gray
+                )
             }
-            stationsList(list = stationsList, scrollState = scrollState)
+            stationsList(list = stationsList, scrollState = { scrollState })
         }
 
     }
 }
 
 @Composable
-fun batteryDataView(stats: List<ChargingData>) {
-    Row(modifier = Modifier.padding(16.dp)) {
-        HeaderTextView(modifier = Modifier, text = "Statistics")
-        Spacer(modifier = Modifier.weight(1f))
-        Icon(
+fun batteryDataView(batteryData: List<ChargingData>) {
+    Row(modifier = Modifier.fillMaxWidth().height(50.dp), horizontalArrangement = Arrangement.SpaceBetween) {
+        HeaderTextView(
+            modifier = Modifier
+                .align(Alignment.CenterVertically)
+                .padding(start = 16.dp),
+            text = "Statistics"
+        )
+        ChargingView(
+            modifier = Modifier
+                .align(Alignment.Top)
+                .padding(end = 42.dp)
+                .height(75.dp),
+            color = Color.White
+        )
+        Image(
+            modifier = Modifier
+                .align(Alignment.CenterVertically)
+                .padding(horizontal = 16.dp),
             painter = painterResource(id = R.drawable.baseline_more_horiz_24),
             contentDescription = null
         )
     }
-    LazyRow(contentPadding = PaddingValues(13.dp)) {
-
-        items(count = stats.size, itemContent = { index ->
+    LazyRow(modifier = Modifier.padding(horizontal = 8.dp)) {
+        items(count = batteryData.size, itemContent = { index ->
             val drawableId =
                 if (index == 0) R.drawable.car_battery_solid else if (index == 1) R.drawable.battery_half_solid else R.drawable.charging_station_solid
 
@@ -382,8 +343,8 @@ fun batteryDataView(stats: List<ChargingData>) {
             StatisticsCard(
                 drawableRes = drawableId,
                 backgroundColor = drawableBgColor,
-                valueAndUnit = stats[index].value,
-                description = stats[index].description
+                valueAndUnit = batteryData[index].value,
+                description = batteryData[index].description
             )
         })
     }
