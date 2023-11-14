@@ -24,12 +24,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -44,7 +42,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -56,7 +53,6 @@ import com.example.mytask.common.BottomNavigationBar
 import com.example.mytask.common.DataLoadingView
 import com.example.mytask.common.HeaderTextView
 import com.example.mytask.common.NormalTextView
-import com.example.mytask.common.TitleTextView
 import com.example.mytask.common.bezierCurveCardProvider
 import com.example.mytask.home.domain.models.ChargingData
 import com.example.mytask.home.domain.models.NearestChargingStation
@@ -119,51 +115,6 @@ fun HomeScreenContent(state: HomeEvents) {
 @Composable
 fun ErrorToast(throwable: Throwable) {
     Toast.makeText(LocalContext.current, throwable.message.toString(), Toast.LENGTH_SHORT).show()
-}
-
-@Composable
-fun NearbySuperchargesListView(modifier: Modifier, nearestChargingStation: NearestChargingStation) {
-    Row(
-        modifier = modifier.background(
-            color = colorResource(R.color.very_light_gray), shape = RoundedCornerShape(8.dp)
-        )
-    ) {
-        Column(
-            modifier = Modifier
-                .align(Alignment.CenterVertically)
-                .padding(horizontal = 16.dp)
-        ) {
-            TitleTextView(
-                text = nearestChargingStation.name, modifier = Modifier.padding(horizontal = 4.dp)
-            )
-            NormalTextView(
-                text = " ${nearestChargingStation.unitsAvailable}/10 available",
-                modifier = Modifier.padding(4.dp)
-            )
-        }
-        Spacer(
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxHeight()
-
-        )
-        Column(
-            modifier = Modifier
-                .fillMaxHeight()
-                .padding(8.dp)
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.location_on_24),
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .size(32.dp),
-                contentDescription = ""
-            )
-            NormalTextView(
-                text = " ${nearestChargingStation.destination}km", modifier = Modifier.padding(8.dp)
-            )
-        }
-    }
 }
 
 @Composable
