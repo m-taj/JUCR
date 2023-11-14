@@ -15,8 +15,15 @@ import javax.inject.Inject
 
 /**
  * Home Screen View Model has repository injected in its constructor ,
- * if UseCase was Implemented then the repo would have been injected in the use case and the use-case
+ *
+ *
+ * 1- if UseCase was Implemented then the repo would have been injected in the use case and the use-case
  * would be injected into the view-model instead
+ *
+ * 2- normally domain models are for domain layer only , as for presentation layer (view-model) i create UI models and a mapper
+ * which maps the data from domain model to their respective UI models
+ *
+ * 3- used state flow as it serves the need with the sealed class based feature events as they're mutually exclusive
  **/
 
 @HiltViewModel
@@ -24,16 +31,10 @@ class HomeViewModel @Inject constructor(val repository: HomeStatisticsRepository
 
     val homeEvents: StateFlow<HomeEvents>
         get() = _homeEvents
-    private val _homeEvents =
-        MutableStateFlow<HomeEvents>(
-            HomeEvents.loading()
-        )
+    private val _homeEvents = MutableStateFlow<HomeEvents>(
+        HomeEvents.loading()
+    )
 
-
-    /**
-     * this function simulates calling a use case , which in turn will call the respective function
-     * within the feature repo to return our response/mocked data
-     **/
     fun getNearChargingStations() {
 
         _homeEvents.update { HomeEvents.loading() }
@@ -46,8 +47,7 @@ class HomeViewModel @Inject constructor(val repository: HomeStatisticsRepository
             try {
                 _homeEvents.update {
                     HomeEvents.nearStationsListReceivedSuccessFully(
-                        nearestStation.await(),
-                        batteryStats.await()
+                        nearestStation.await(), batteryStats.await()
                     )
                 }
             } catch (throwable: Throwable) {

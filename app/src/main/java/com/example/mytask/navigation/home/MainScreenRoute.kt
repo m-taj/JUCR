@@ -11,7 +11,6 @@ import com.example.mytask.home.presentation.viewmodel.HomeViewModel
  */
 
 @Composable
-fun HomeScreenRoute() {
-    val viewModel: HomeViewModel = hiltViewModel()
+fun HomeScreenRoute(viewModel: HomeViewModel = hiltViewModel()) {
     HomeScreen(viewModel)
 }
