@@ -137,19 +137,18 @@ fun stationsList(list: List<NearestChargingStation>, scrollState: () -> LazyList
 }
 
 @Composable
-fun HeaderView(scrollOffset: () -> Float, screenHeight: Dp, screenWidth: Dp) {
+fun HeaderView(
+    scrollOffset: () -> Float,
+    screenHeight: Dp,
+    screenWidth: Dp,
+    isExpanded: () -> Boolean,
+) {
     val imageSize by animateDpAsState(
         targetValue = maxOf(290.dp, 70.dp * scrollOffset()), label = ""
     )
     val headerSize by animateDpAsState(
         targetValue = maxOf((screenHeight / 3) * scrollOffset(), 100.dp), label = ""
     )
-
-    val isExpanded by remember {
-        derivedStateOf {
-            scrollOffset() > 0.9
-        }
-    }
 
     Box(
         modifier = Modifier
@@ -158,7 +157,7 @@ fun HeaderView(scrollOffset: () -> Float, screenHeight: Dp, screenWidth: Dp) {
             .height(headerSize)
     ) {
         AnimatedVisibility(
-            visible = isExpanded,
+            visible = isExpanded(),
             enter = fadeIn() + slideInHorizontally(animationSpec = tween(1000),
                 initialOffsetX = { screenWidth.value.toInt() + imageSize.value.toInt() }),
             exit = fadeOut(
@@ -174,7 +173,7 @@ fun HeaderView(scrollOffset: () -> Float, screenHeight: Dp, screenWidth: Dp) {
             )
         }
         AnimatedVisibility(
-            visible = isExpanded.not(),
+            visible = isExpanded().not(),
             enter = fadeIn() + slideInVertically(
                 animationSpec = tween(1000),
                 initialOffsetY = { screenHeight.value.toInt() / 2 }),
@@ -210,6 +209,12 @@ fun SuccessView(
         }
     }
 
+    val isExpanded by remember {
+        derivedStateOf {
+            scrollOffset > 0.9
+        }
+    }
+
     Column(
         Modifier
             .fillMaxSize()
@@ -219,7 +224,7 @@ fun SuccessView(
         HeaderView(
             scrollOffset = { scrollOffset },
             screenHeight = config.screenHeightDp.dp,
-            screenWidth = config.screenWidthDp.dp
+            screenWidth = config.screenWidthDp.dp, isExpanded = { isExpanded }
         )
         Column(modifier = Modifier
             .fillMaxWidth()
@@ -228,13 +233,14 @@ fun SuccessView(
                     /**
                      * drawing the acquired Path and filling it with the white color
                      * */
-                    drawPath(path = bezierCurveCardProvider(context = { context },
-                        localConfiguration = { config }), color = Color.White, style = Fill
+                    drawPath(
+                        path = bezierCurveCardProvider(context = { context },
+                            localConfiguration = { config }), color = Color.White, style = Fill
                     )
                 }
             }) {
 
-            batteryDataView(batteryData = stats)
+            batteryDataView(batteryData = stats, isExpanded = { isExpanded })
 
             Row(
                 modifier = Modifier
@@ -263,8 +269,13 @@ fun SuccessView(
 }
 
 @Composable
-fun batteryDataView(batteryData: List<ChargingData>) {
-    Row(modifier = Modifier.fillMaxWidth().height(50.dp), horizontalArrangement = Arrangement.SpaceBetween) {
+fun batteryDataView(batteryData: List<ChargingData>, isExpanded: () -> Boolean) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(50.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
         HeaderTextView(
             modifier = Modifier
                 .align(Alignment.CenterVertically)
@@ -272,13 +283,26 @@ fun batteryDataView(batteryData: List<ChargingData>) {
             text = "Statistics",
             color = Color.DarkGray
         )
-        ChargingLoader(
+
+        Box(
             modifier = Modifier
                 .align(Alignment.Top)
                 .padding(end = 42.dp)
-                .height(75.dp),
-            color = Color.White
-        )
+                .height(75.dp)
+        ) {
+            this@Row.AnimatedVisibility(visible = isExpanded()) {
+                ChargingLoader(
+                    modifier = Modifier,
+                    color = Color.White
+                )
+            }
+            this@Row.AnimatedVisibility(visible = isExpanded().not()) {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_arrow_down),
+                    contentDescription = null
+                )
+            }
+        }
         Image(
             modifier = Modifier
                 .align(Alignment.CenterVertically)
