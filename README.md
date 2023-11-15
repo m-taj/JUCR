@@ -1,5 +1,5 @@
 # 🚗 JUCR
-a submussin for JUCR Challenge using Compose , Hilt , MVVM with states , coroutines Jetpack navigation and
+a submussin for JUCR Challenge using Compose , Hilt , MVVM with states , coroutines Jetpack navigation
 
 I have enjoyed it as i have played around with compose , did a couple of stuff to test it out but this is only the second time for me to build something in Compose and it was challenging in a good way given the time frame and the requirment
 
