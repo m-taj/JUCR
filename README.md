@@ -7,7 +7,7 @@ I have enjoyed it as i have played around with compose , did a couple of stuff t
 - choose a another project setup i.e module per layer , module per feature
 - adding useCase for the domain layer
 - adding Ui Models and a mapper for the presentation layer to map data models from domain to UI models
-- if i had more time would have tried top clean up compose implementation and animation
+- if i had more time would have tried to clean up compose implementation and animation
 - UI enhancment and polishing
 - testing
 
